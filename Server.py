@@ -17,5 +17,10 @@ def run_server():
             client_socket.send("closed".encode("utf-8"))
             break
         print(f"Received: {request}")
+        response = "accepted".encode("utf-8")
+        client_socket.send(response)
+    client_socket.close()
+    print("Connection to client closed")
+    server.close()
 
 run_server()
