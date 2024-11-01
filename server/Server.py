@@ -1,6 +1,15 @@
 import socket
 import threading
 
+def GET_handler(client_socket, request, file_path):
+    print(file_path)
+    if file_path == '/':
+        return ("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"
+                "<body><h1>This is the server home page</h1></body>")
+    
+    pass
+def POST_handler(client_socket, request, file_path):
+    pass
 
 def handle_client(client_socket, addr):
     try:
@@ -11,9 +20,21 @@ def handle_client(client_socket, addr):
                 client_socket.send("closed".encode("utf-8"))
                 break
             print(f"Received: {request}")
+            command = request.splitlines()[0]
+            print(command)
+            method, file_path, _ = command.split()
+            response = ''
+            if method == "GET":
+                response = GET_handler(client_socket=client_socket, request=request, file_path=file_path)
+                print(response)
+            elif method == "POST":
+                response = POST_handler(client_socket=client_socket, request=request, file_path=file_path)
+            else:
+                response = "HTTP/1.1 404 Not Found\r\n"
             # convert and send accept response to the client
-            response = "accepted"
-            client_socket.send(response.encode("utf-8"))
+            
+            response += "\r\n"
+            client_socket.sendall(response.encode("utf-8"))
     except Exception as e:
         print(f"Error when hanlding client: {e}")
     finally:
