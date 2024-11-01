@@ -3,6 +3,7 @@ import socket
 import threading
 DIR = os.path.join(os.getcwd(), "files")
 def GET_handler(client_socket, request, file_path):
+    
     print(file_path)
     if file_path == '/':
         return ("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: keep-alive\r\n\r\n"
@@ -11,21 +12,32 @@ def GET_handler(client_socket, request, file_path):
     file_path = os.path.join(DIR, file_path.lstrip('/'))
     print(file_path)
     try:
-        Ctype = "text/plain" if file_path.endswith('.txt') else 'text/html' if file_path.endswith('.html') else 'image/jpeg'
+        if file_path.endswith('.txt'):
+            Ctype = "text/plain"
+            rM = 'r'
+            pass
+        elif file_path.endswith('.html'):
+            Ctype = 'text/html'
+            rM = 'rb'
+        else:
+            Ctype = 'image/jpeg'
+            rM = 'rb'
+
         print("file_path")
-        file = open(file_path, 'rb')
+        file = open(file_path, rM)
         body = file.read()
         response = ("HTTP/1.1 200 OK \r\n"
                     f"Content-Length: {len(body)}\r\n"
                     f"Content-Type: {Ctype}\r\n\r\n"
                     )
+        body = body.encode('utf-8') if Ctype == 'text/plain' else body 
         return response.encode('utf-8')+body
     except Exception as e:
         print(e)
         return ("HTTP/1.1 404 Not Found\r\nContent-Length: 15\r\nContent-Type: text/plain\r\n\r\n"
                 "File not found.").encode('utf-8')
     
-    pass
+    
 def POST_handler(client_socket, request, file_path):
     pass
 

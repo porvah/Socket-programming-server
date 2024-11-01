@@ -28,12 +28,12 @@ def run_client(file_name):
                     print(msg)
                     client.send(msg.encode("utf-8"))
                     print('here')
-                    response = b""
-                    while True:
-                        part = client.recv(1024) 
-                        if not part:
-                            break
-                        response += part
+                    response =client.recv(1024)
+                    # while True:
+                    #     part = 
+                    #     if not part:
+                    #         break
+                    #     response += part
                     print(response)
                     handle_get(response , file_path)
                     
