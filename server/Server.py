@@ -6,7 +6,7 @@ def GET_handler(client_socket, request, file_path):
     print(file_path)
     if file_path == '/':
         return ("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: keep-alive\r\n\r\n"
-                "<body><h1>This is the server home page</h1><p>Try to get and post files!!</p></body>")
+                "<body><h1>This is the server home page</h1><p>Try to get and post files!!</p></body>").encode('utf-8')
     print("here")
     file_path = os.path.join(DIR, file_path.lstrip('/'))
     print(file_path)

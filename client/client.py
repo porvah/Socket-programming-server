@@ -27,6 +27,7 @@ def run_client(file_name):
                     msg = client_get(file_path, host_name, port_number)
                     print(msg)
                     client.send(msg.encode("utf-8"))
+                    print('here')
                     response = b""
                     while True:
                         part = client.recv(1024) 
