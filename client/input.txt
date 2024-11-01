@@ -1,1 +1,1 @@
-client_get /path/to/file example.com 8080
+client_get / 127.0.0.1
