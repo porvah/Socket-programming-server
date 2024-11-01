@@ -33,8 +33,8 @@ def handle_client(client_socket, addr):
                 response = "HTTP/1.1 404 Not Found\r\n"
             # convert and send accept response to the client
             
-            response += "\r\n"
-            client_socket.sendall(response.encode("utf-8"))
+            # response += "\r\n\r\n"
+            client_socket.send(response.encode("utf-8"))
     except Exception as e:
         print(f"Error when hanlding client: {e}")
     finally:
