@@ -12,7 +12,7 @@ def get_filename(base_name, content_type):
     elif 'text/plain' in content_type:
         extension = ".txt"
     elif 'image/' in content_type:
-        extension = ".jpg"  
+        extension = ".jpeg"  
     else:
         raise ValueError("Unsupported content type")
     
@@ -21,7 +21,7 @@ def get_filename(base_name, content_type):
 
 #get_request
 def client_get(file_path, host_name, port_number=8000):
-        msg = f"GET {file_path} HTTP/1.1\r\nHost: {host_name}\r\nConnection: keep-alive\r\n\r\n"
+        msg = f"GET {file_path} HTTP/1.1\r\nHost: {host_name}:{port_number}\r\nConnection: keep-alive\r\n\r\n"
         return msg
 
 def handle_get(response , file_path):

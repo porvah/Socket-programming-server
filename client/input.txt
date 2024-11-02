@@ -1,2 +1,3 @@
 client_get hello.html 127.0.0.1
 client_get hi.txt 127.0.0.1
+client_get vegeta.jpeg 127.0.0.1
