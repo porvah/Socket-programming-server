@@ -1,5 +1,5 @@
 import socket
-from request_handlers import  client_get , client_post , handle_get
+from request_handlers import  client_get , client_post , handle_get ,get_content_length
 
 def run_client(file_name):  
     # Create a socket object
@@ -25,10 +25,12 @@ def run_client(file_name):
 
                 if command_request == "client_get":
                     msg = client_get(file_path, host_name, port_number)
-                    print(msg)
                     client.send(msg.encode("utf-8"))
-                    print('here')
-                    response =client.recv(8000)
+                    response = client.recv(1024)
+                    length = get_content_length(response)
+                    print(length)
+                    if length > 1024:
+                        response += client.recv(length)
                     print(response)
                     handle_get(response , file_path)
                     
@@ -45,5 +47,5 @@ def run_client(file_name):
         print("Connection to server closed")
 
 
-run_client("client/input.txt")
+run_client("input.txt")
 

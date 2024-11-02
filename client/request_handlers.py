@@ -24,6 +24,22 @@ def client_get(file_path, host_name, port_number=8000):
         msg = f"GET {file_path} HTTP/1.1\r\nHost: {host_name}:{port_number}\r\nConnection: keep-alive\r\n\r\n"
         return msg
 
+def get_content_length(response):
+    try:
+        response_str = response.decode('utf-8' , errors='ignore')
+    except Exception as e:
+        print(f"Decoding error: {e}")
+        return None 
+
+    lines = response_str.split('\r\n')
+    print(lines)
+    for line in lines:
+        if line.startswith('Content-Length:'):
+            _, length = line.split(':', 1)
+            return int(length.strip()) 
+
+    return None
+
 def handle_get(response , file_path):
     # Separate headers and body
     header_data, _, body = response.partition(b"\r\n\r\n")
@@ -50,7 +66,7 @@ def handle_get(response , file_path):
         file_name = get_filename(base_name, content_type)
 
         # Define directory to save the file
-        save_directory = "client/get_request_files"
+        save_directory = "get_request_files"
         os.makedirs(save_directory, exist_ok=True)  # Ensure directory exists
         complete_file_path = os.path.join(save_directory, file_name)
 
@@ -60,7 +76,6 @@ def handle_get(response , file_path):
         print(f"File saved as: {complete_file_path}")
     else:
         print(f"Failed to get file: Status {status_code}")
-
 
 #post request
 def client_post(file_path, host_name, port_number=80):
