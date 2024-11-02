@@ -6,6 +6,7 @@ def save_file(file_path, data):
         f.write(data)
     print(f"File saved as: {file_path}")
 
+#function to get the name based on the type
 def get_filename(base_name, content_type):
     if 'text/html' in content_type:
         extension = ".html"
@@ -28,7 +29,7 @@ def get_content_length(response):
     try:
         response_str = response.decode('utf-8' , errors='ignore')
     except Exception as e:
-        print(f"Decoding error: {e}")
+        print(f"Error: {e}")
         return None 
 
     lines = response_str.split('\r\n')
@@ -46,26 +47,24 @@ def handle_get(response , file_path):
     headers = header_data.decode("utf-8").split("\r\n")
     status_line = headers[0]
     status_code = int(status_line.split()[1])
-    print(response)
 
-    # Check status and handle file saving if successful
+    #check the status code
     if status_code == 200:
-        # Get content type from headers if available
         content_type = None
         for header in headers:
             if header.lower().startswith("content-type:"):
                 content_type = header.split(":")[1].strip()
                 break
 
-        # Set base name based on the file path or a default name
+        #get the ile path
         base_name = os.path.splitext(os.path.basename(file_path))[0]
-        if not base_name:  # If the file path doesn't specify a file, use a default name
+        if not base_name:
             base_name = "index"
 
         # Create a file name based on the content type
         file_name = get_filename(base_name, content_type)
-
-        # Define directory to save the file
+         
+        #save to the default directory
         save_directory = "get_request_files"
         os.makedirs(save_directory, exist_ok=True)  # Ensure directory exists
         complete_file_path = os.path.join(save_directory, file_name)
