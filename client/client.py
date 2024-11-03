@@ -1,6 +1,6 @@
 import socket
 import time
-from request_handlers import  client_get , client_post , handle_get ,get_content_length
+from request_handlers import  client_get , handle_post , handle_get ,get_content_length
 import threading
 
 def run_client(file_name):  
@@ -17,7 +17,6 @@ def run_client(file_name):
         with open(file_name, 'r') as file:
             for command_line in file:
                 command = command_line.strip().split()
-                print(command)
                 if not command:
                     continue
 
@@ -42,7 +41,9 @@ def run_client(file_name):
                     handle_get(response , file_path)
                     
                 elif command_request == "client_post":
-                    client_post(file_path, host_name, port_number)
+                    msg = handle_post(file_path , host_name , port_number)
+                    client.send(msg)
+                    response = client.recv(1024)
                 else:
                     print("Invalid command")
         end_time = time.time()
@@ -57,7 +58,7 @@ def run_client(file_name):
         print("Connection to server closed")
 
 
-#for performance evaluation
+# for performance evaluation
 def run_clients(num_of_clients):
     threads = []
     times = []
@@ -76,5 +77,5 @@ def run_clients(num_of_clients):
     for time in times:
         print(time)
 
-run_clients(7)
+run_clients(3)
 
