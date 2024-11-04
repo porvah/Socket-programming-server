@@ -19,7 +19,7 @@ def run_client(file_name):
                 command = command_line.strip().split()
                 if not command:
                     continue
-
+                print(command)
                 command_request = command[0]
                 file_path = command[1]
                 host_name = command[2]
@@ -28,34 +28,39 @@ def run_client(file_name):
                 if command_request == "client_get":
                     #send a request
                     msg = client_get(file_path, host_name, port_number)
-                    client.send(msg.encode("utf-8"))
+                    print("here")
 
+                    client.send(msg.encode("utf-8"))
+                    print("here2")
                     response = client.recv(1024)
-                
+                    print("here3")
                     #check the content length of the response
                     length = get_content_length(response)
                     if length > 1024:
                         response += client.recv(length)
-                    
+                    print("here4")
+
                     #handle the response
                     handle_get(response , file_path)
                     
                 elif command_request == "client_post":
                     msg = handle_post(file_path , host_name , port_number)
+                    print("here")
                     client.send(msg)
+                    print("here2")
                     response = client.recv(1024)
+                    print("here3")
                 else:
                     print("Invalid command")
-        end_time = time.time()
-
-        return end_time - start_time
-
+        
     except Exception as e:
         print(f"Error: {e}")
     finally:
         # Close client socket (connection to the server)
+        end_time = time.time()
         client.close()
         print("Connection to server closed")
+        return end_time - start_time
 
 
 # for performance evaluation
@@ -77,5 +82,5 @@ def run_clients(num_of_clients):
     for time in times:
         print(time)
 
-run_clients(3)
-
+# run_clients(3)
+run_client('input.txt')

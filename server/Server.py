@@ -104,29 +104,28 @@ def handle_client(client_socket, addr):
     try:
         while True:
             # receive and print client messages
-            request = client_socket.recv(1024).decode('utf-8')
-
-            if request.lower() == "close":
-                client_socket.send("closed".encode("utf-8"))
-                break
-            command = request.splitlines()[0]
-            method, file_path, _ = command.split()
-            response = ''
-            if method == "GET":
-                response = GET_handler(client_socket=client_socket, request=request, file_path=file_path)
-            elif method == "POST":
-                request = request.encode("utf-8")
-                length = get_content_length(request)
-                if length > 1024:
-                    request += client_socket.recv(length)
-                    print(request)
-                response = POST_handler(client_socket=client_socket, request=request, file_path=file_path)
+            request = client_socket.recv(1024).decode('utf-8', errors='ignore')
+            if request:
+                command = request.splitlines()[0]
+                method, file_path, _ = command.split()
+                response = ''
+                if method == "GET":
+                    response = GET_handler(client_socket=client_socket, request=request, file_path=file_path)
+                elif method == "POST":
+                    request = request.encode("utf-8")
+                    length = get_content_length(request)
+                    if length > 1024:
+                        request += client_socket.recv(length)
+                        print(request)
+                    response = POST_handler(client_socket=client_socket, request=request, file_path=file_path)
+                else:
+                    response = "HTTP/1.1 404 Not Found\r\n".encode("utf-8")
+                # convert and send accept response to the client
+                
+                #response += "\r\n"
+                client_socket.send(response)
             else:
-                response = "HTTP/1.1 404 Not Found\r\n".encode("utf-8")
-            # convert and send accept response to the client
-            
-            #response += "\r\n"
-            client_socket.send(response)
+                break
     except Exception as e:
         print(f"Error when hanlding client: {e}")
     finally:
