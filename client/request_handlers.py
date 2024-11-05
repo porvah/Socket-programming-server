@@ -41,14 +41,10 @@ def get_content_length(response):
     return None
 
 def handle_get(response , file_path):
-    print(response)
-    # Separate headers and body
     header_data, _, body = response.partition(b"\r\n\r\n")
     headers = header_data.decode("utf-8").split("\r\n")
     status_line = headers[0]
     status_code = int(status_line.split()[1])
-
-    #check the status code
     if status_code == 200:
         content_type = None
         for header in headers:
@@ -61,7 +57,6 @@ def handle_get(response , file_path):
         if not base_name:
             base_name = "index"
 
-        # Create a file name based on the content type
         file_name = get_filename(base_name, content_type)
          
         #save to the default directory
@@ -69,7 +64,6 @@ def handle_get(response , file_path):
         os.makedirs(save_directory, exist_ok=True)  # Ensure directory exists
         complete_file_path = os.path.join(save_directory, file_name)
 
-        # Save the file
         save_file(complete_file_path, body)
         print(f"File saved as: {complete_file_path}")
     else:
