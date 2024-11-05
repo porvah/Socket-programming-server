@@ -59,7 +59,9 @@ def GET_handler(client_socket, request, file_path):
 def POST_handler(client_socket, request, file_path):
     # Parse headers and body
     header_data, _, body = request.partition(b"\r\n\r\n")
-    headers = header_data.decode("utf-8").split("\r\n") 
+    # print("_ = " +_)
+    # print("body = " + body)
+    headers = header_data.decode("utf-8").split("\r\n")
 
     content_type = None
     for header in headers:
@@ -104,15 +106,15 @@ def handle_client(client_socket, addr):
     try:
         while True:
             # receive and print client messages
-            request = client_socket.recv(1024).decode('utf-8', errors='ignore')
+            request = client_socket.recv(1024)
             if request:
-                command = request.splitlines()[0]
+                request2 = request.decode('utf-8', errors='ignore')
+                command = request2.splitlines()[0]
                 method, file_path, _ = command.split()
                 response = ''
                 if method == "GET":
-                    response = GET_handler(client_socket=client_socket, request=request, file_path=file_path)
+                    response = GET_handler(client_socket=client_socket, request=request2, file_path=file_path)
                 elif method == "POST":
-                    request = request.encode("utf-8")
                     length = get_content_length(request)
                     if length > 1024:
                         request += client_socket.recv(length)
