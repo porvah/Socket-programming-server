@@ -66,8 +66,8 @@ def run_clients(num_of_clients):
     avg_delay = sum(times) / len(times) if times else 0
     print(f"Average delay with {num_of_clients} clients: {avg_delay:.4f} seconds")
 
-    for time in times:
-        print(time)
+    # for time in times:
+    #     print(time)
 
 parser = argparse.ArgumentParser(description="Parser for port argument")
 
