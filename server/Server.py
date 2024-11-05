@@ -1,4 +1,3 @@
-import os
 import socket
 import threading
 from handlers import GET_handler, get_content_length, POST_handler
@@ -37,8 +36,8 @@ def handle_client(client_socket, addr):
 
 
 def run_server():
-    server_ip = "127.0.0.1"  # server hostname or IP address
-    port = 8000  # server port number
+    server_ip = args.ip  # server hostname or IP address
+    port = args.port  # server port number
     # create a socket object
     try:
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -60,5 +59,12 @@ def run_server():
     finally:
         server.close()
 
+import argparse
 
+parser = argparse.ArgumentParser(description="Parser for port argument")
+
+parser.add_argument("port", type=int, help="Server port")  
+parser.add_argument("--ip", type=str, default='127.0.0.1', help="hostname")  #optional argument
+
+args = parser.parse_args()
 run_server()
