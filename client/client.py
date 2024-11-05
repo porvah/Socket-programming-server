@@ -2,14 +2,13 @@ import socket
 import time
 from request_handlers import  client_get , handle_post , handle_get ,get_content_length
 import threading
+import argparse
 
 def run_client(file_name):  
     start_time = time.time()
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    server_ip = "127.0.0.1"
-    server_port = 8000  
-    client.connect((server_ip, server_port))
+ 
+    client.connect((args.ip, args.port))
 
     try:
         with open(file_name, 'r') as file:
@@ -70,4 +69,12 @@ def run_clients(num_of_clients):
     # for time in times:
     #     print(time)
 
+parser = argparse.ArgumentParser(description="Parser for port argument")
+
+parser.add_argument("ip", type=str, default='127.0.0.1', help="hostname") 
+parser.add_argument("port", type=int, help="Server port")  
+
+args = parser.parse_args()
+
+# run_clients(3)
 run_client('input.txt')
