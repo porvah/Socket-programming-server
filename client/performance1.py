@@ -24,8 +24,7 @@ parser = argparse.ArgumentParser(description="Parser for port argument")
 
 parser.add_argument("ip", type=str, default='127.0.0.1', help="hostname") 
 parser.add_argument("port", type=int, help="Server port")  
-# parser.add_argument("clients", type=int, help="number of clients")  
 
 args = parser.parse_args()
 
-run_clients(5)
+run_clients(10000)

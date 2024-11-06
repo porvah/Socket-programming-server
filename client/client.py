@@ -48,6 +48,7 @@ def run_client(file_name , server_ip , port_number):
         end_time = time.time()
         client.close()
         print("Connection to server closed")
+        print("time= " +str(end_time - start_time))
         return end_time - start_time
 
 
