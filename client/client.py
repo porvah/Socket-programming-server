@@ -4,11 +4,11 @@ from request_handlers import  client_get , handle_post , handle_get ,get_content
 import threading
 import argparse
 
-def run_client(file_name):  
+def run_client(file_name , server_ip , port_number):  
     start_time = time.time()
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
  
-    client.connect((args.ip, args.port))
+    client.connect((server_ip, port_number))
 
     try:
         with open(file_name, 'r') as file:
@@ -77,4 +77,4 @@ parser.add_argument("port", type=int, help="Server port")
 args = parser.parse_args()
 
 # run_clients(3)
-run_client('input.txt')
+run_client('input.txt' , args.ip , args.port)
