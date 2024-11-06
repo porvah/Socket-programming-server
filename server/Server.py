@@ -67,8 +67,9 @@ def run_server():
             client_socket.settimeout(defTimout/threadsCount)
             print(f"Accepted connection from {addr[0]}:{addr[1]}")
             # start a new thread to handle the client
-            thread = threading.Thread(target=handle_client, args=(client_socket, addr,))
-            thread.start()
+            # thread = threading.Thread(target=handle_client, args=(client_socket, addr,))
+            # thread.start()
+            handle_client(client_socket=client_socket, addr=addr)
     except Exception as e:
         print(f"Error: {e}")
     finally:
