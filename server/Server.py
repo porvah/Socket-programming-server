@@ -1,10 +1,27 @@
 import socket
 import threading
 from handlers import GET_handler, get_content_length, POST_handler
+import argparse
+# Global variables
+"""
+    defTimeout is the timeout for a single threaded server
+    threadsCount is to keep track of current open threads
+    count_lock is a lock to protect threadsCount from race condition
+    max_thread_count is a counter for the maximum concurrent threads in the server
+"""
 defTimout = 20.0
 threadsCount = 1
 count_lock = threading.Lock()
 max_thread_count = 1
+
+"""
+    handle_client() -> 
+        increment thread count
+        continues to recieve from the socket
+        puts a timout on the socket depending on the number of live sockets in the server.
+        parsers request and forwards it to the appropriate handler (GET or POST)
+        handles invalid requests and catches timout by closing connection
+"""
 def handle_client(client_socket, addr):
     global threadsCount
     global max_thread_count
@@ -48,12 +65,18 @@ def handle_client(client_socket, addr):
         print("maximum concurrent threads = "+ str(max_thread_count-1))
 
 
-
+"""
+    run_server()->
+        gets server ip and port from arguments
+        creates server port and listens for connection requests
+        any new request is handled on a seperate thread using the handler (handle_client)
+"""
 def run_server():
     server_ip = args.ip  # server hostname or IP address
     port = args.port  # server port number
-    # create a socket object
+    
     try:
+        # server socket
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # bind the socket to the host and port
         server.bind((server_ip, port))
@@ -69,14 +92,15 @@ def run_server():
             # start a new thread to handle the client
             thread = threading.Thread(target=handle_client, args=(client_socket, addr,))
             thread.start()
+            # this line is for single threaded server
             # handle_client(client_socket=client_socket, addr=addr)
     except Exception as e:
         print(f"Error: {e}")
     finally:
         server.close()
 
-import argparse
 
+# logic for parsing terminal arguments
 parser = argparse.ArgumentParser(description="Parser for port argument")
 
 parser.add_argument("port", type=int, help="Server port")  

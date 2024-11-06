@@ -3,7 +3,8 @@ import argparse
 from ast import arg
 import threading
 from client import run_client
-
+# code for performance evaluation 
+# it runs the client on multiple threads and computes the average delay
 def run_clients(num_of_clients):
     threads = []
     times = []

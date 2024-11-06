@@ -1,9 +1,16 @@
 import socket
 import time
 from request_handlers import  client_get , handle_post , handle_get ,get_content_length
-import threading
 import argparse
 
+"""
+    this is the function for running the client
+    - it begins by starting a timer
+    - initiates a client socket and requests a connection with the server
+    - after that it opens the input.txt file and begins parsing and executing commands
+      based on their content and sends them to the appropriate handler
+    - in the end the timer is stopped and connection is closed ending the program along with it
+"""
 def run_client(file_name , server_ip , port_number):  
     start_time = time.time()
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,6 +44,7 @@ def run_client(file_name , server_ip , port_number):
                     
                 elif command_request == "client_post":
                     msg = handle_post(file_path , host_name , port_number)
+                    
                     client.send(msg)
                     response = client.recv(1024)
                 else:
@@ -51,25 +59,7 @@ def run_client(file_name , server_ip , port_number):
         print("time= " +str(end_time - start_time))
         return end_time - start_time
 
-
-def run_clients(num_of_clients):
-    threads = []
-    times = []
-    for i in range(num_of_clients):
-        print("thread " + str(i) + " starts")
-        thread = threading.Thread(target=lambda: times.append(run_client("input.txt")))
-        thread.start()
-        threads.append(thread)
-    
-    for thread in threads:
-        thread.join()
-    
-    avg_delay = sum(times) / len(times) if times else 0
-    print(f"Average delay with {num_of_clients} clients: {avg_delay:.4f} seconds")
-
-    # for time in times:
-    #     print(time)
-
+# This is the code for parsing arguments from the terminal
 parser = argparse.ArgumentParser(description="Parser for port argument")
 
 parser.add_argument("ip", type=str, default='127.0.0.1', help="hostname") 
@@ -77,5 +67,4 @@ parser.add_argument("port", type=int, help="Server port")
 
 args = parser.parse_args()
 
-# run_clients(3)
 run_client('input.txt' , args.ip , args.port)

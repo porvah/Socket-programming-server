@@ -1,7 +1,7 @@
 import http.client
 import os
 DIR = os.path.join(os.getcwd(), "post_request_files")
-
+#function for saving files in a directory
 def save_file(file_path, data):
     with open(file_path, 'wb') as f:
         f.write(data)
@@ -20,11 +20,11 @@ def get_filename(base_name, content_type):
     filename = f"{base_name}{extension}"
     return filename
 
-#get_request
+# function for making the GET request format massage -> GET request
 def client_get(file_path, host_name, port_number=8000):
         msg = f"GET {file_path} HTTP/1.1\r\nHost: {host_name}:{port_number}\r\nConnection: keep-alive\r\n\r\n"
         return msg
-
+# function for parsing content length from the response headers
 def get_content_length(response):
     try:
         response_str = response.decode('utf-8' , errors='ignore')
@@ -39,7 +39,12 @@ def get_content_length(response):
             return int(length.strip()) 
 
     return None
-
+"""
+    this function handles GET request server response 
+    - it begins by partitioning response to headers and body
+    - parses the status code and determines whether the request has succeeded or not
+    - if so, it gets the body data and the content type and begins recombining the file and saving it to directory
+"""
 def handle_get(response , file_path):
     header_data, _, body = response.partition(b"\r\n\r\n")
     headers = header_data.decode("utf-8").split("\r\n")
@@ -69,7 +74,12 @@ def handle_get(response , file_path):
     else:
         print(f"Failed to get file: Status {status_code}")
 
-#post request
+"""
+    this function handles post request commands
+        - it begins by determining the content type sent depending on the extension
+        - it reads the file content and  embeds it into the request
+        - if the file is not found it raises an exception
+"""
 def handle_post(file_path, host_name, port_number=8000):
     #get the file path
     file_path = os.path.join(DIR, file_path.lstrip('/'))
@@ -103,9 +113,6 @@ def handle_post(file_path, host_name, port_number=8000):
 
     except Exception as e:
         print(f"Error: {e}")
-        return ("HTTP/1.1 404 Not Found\r\n"
-                "Content-Length: 15\r\n"
-                "Content-Type: text/plain\r\n\r\n"
-                "File not found.").encode('utf-8')
+        raise e
     
 
